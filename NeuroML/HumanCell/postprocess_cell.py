@@ -223,6 +223,117 @@ def post_process_cell(cellname: str):
         ion="ca",
         ion_chan_def_file="channels/Ca_LVAst.channel.nml")
 
+    # apical
+    sg = cell.get_segment_group("apical_dendrite_group")
+    sgid = sg.id
+    # K
+    cell.add_channel_density(nml_cell_doc=celldoc,
+                             cd_id="SK_E2_apical",
+                             ion_channel="SK_E2",
+                             cond_density="2.4536e-09 S_per_cm2",
+                             erev="-85 mV",
+                             group_id=sgid,
+                             ion="k",
+                             ion_chan_def_file="channels/SK_E2.channel.nml")
+    cell.add_channel_density(nml_cell_doc=celldoc,
+                             cd_id="SKv3_1_apical",
+                             ion_channel="SKv3_1",
+                             cond_density="0.04 S_per_cm2",
+                             erev="-85 mV",
+                             group_id=sgid,
+                             ion="k",
+                             ion_chan_def_file="channels/SKv3_1.channel.nml")
+    cell.add_channel_density(nml_cell_doc=celldoc,
+                             cd_id="Im_apical",
+                             ion_channel="Im",
+                             cond_density=".0002 S_per_cm2",
+                             erev="-85 mV",
+                             group_id=sgid,
+                             ion="k",
+                             ion_chan_def_file="channels/Im.channel.nml")
+    sg.add(
+        "InhomogeneousParameter",
+        id="PathLengthOverApicDends",
+        variable="p",
+        metric="Path Length from root",
+        proximal=sg.component_factory(
+            "ProximalDetails",
+            translation_start="0")
+    )
+    # distribute Ih
+    cdnonuniform_Ih = cell.add_channel_density_v(
+        "ChannelDensityNonUniform",
+        nml_cell_doc=celldoc,
+        id="Ih_apical",
+        ion_channel="Ih",
+        ion="hcn",
+        erev="-45 mV",
+        validate=False
+    )
+    varparam_Ih = cdnonuniform_Ih.add(
+        "VariableParameter",
+        parameter="condDensity",
+        segment_groups=sg.id,
+        validate=False
+    )
+    # 0.0002 S/cm2 is 2 S/m2
+    # 5.135e-05 S/cm2 is 5.135E-1 S/m2
+    varparam_Ih.add(
+        "InhomogeneousValue",
+        inhomogeneous_parameters="PathLengthOverApicDends",
+        value="5.135E-01 * ((2.087 * exp( 3.6161 * (p/1000))) - 0.8696)"
+    )
+
+    cdnonuniform_ca_lva = cell.add_channel_density_v(
+        "ChannelDensityNonUniformNernst",
+        nml_cell_doc=celldoc,
+        id="Ca_LVA_apic",
+        ion_channel="Ca_LVAst",
+        ion="ca",
+        validate=False
+    )
+    varparam_ca_lva = cdnonuniform_ca_lva.add(
+        "VariableParameter",
+        parameter="condDensity",
+        segment_groups=sg.id,
+        validate=False
+    )
+    # The conditional is implemented using a heaviside function:
+    # https://github.com/NeuroML/org.neuroml.export/blob/master/src/main/java/org/neuroml/export/neuron/NRNUtils.java#L174
+    # if both values in H are true, 99 is added to 1 = 100
+    # otherwise, 1
+    varparam_ca_lva.add(
+        "InhomogeneousValue",
+        inhomogeneous_parameters="PathLengthOverApicDends",
+        value="1E8 * 0.00099839 * 1E-4 * (1 + (99 * (H(p - 360) * H(600 - p))))"
+    )
+    # TODO: continue from here: check units
+
+    cdnonuniform_ca_hva = cell.add_channel_density_v(
+        "ChannelDensityNonUniformNernst",
+        nml_cell_doc=celldoc,
+        id="Ca_HVA_apic",
+        ion_channel="Ca_HVA",
+        ion="ca",
+        validate=False
+    )
+    varparam_ca_hva = cdnonuniform_ca_hva.add(
+        "VariableParameter",
+        parameter="condDensity",
+        segment_groups=sg.id,
+        validate=False
+    )
+    # The conditional is implemented using a heaviside function:
+    # https://github.com/NeuroML/org.neuroml.export/blob/master/src/main/java/org/neuroml/export/neuron/NRNUtils.java#L174
+    # if both values in H are true, 0.9 is added to 0.1 = 1
+    # otherwise, 0.1
+    varparam_ca_hva.add(
+        "InhomogeneousValue",
+        inhomogeneous_parameters="PathLengthOverApicDends",
+        value="1E8 * 0.000555 * 1E-4 * (0.1 + (0.9 * (H(p - 685) * H(885 - p))))"
+    )
+
+
     write_neuroml2_file(celldoc, f"{cellname}.cell.nml")
 
 
