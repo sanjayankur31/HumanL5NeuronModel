@@ -128,6 +128,101 @@ def post_process_cell(cellname: str):
     cell.set_specific_capacitance("1.5967 uF_per_cm2", group_id="all")
     cell.set_init_memb_potential("-80mV")
 
+    # somatic
+    soma_group = cell.get_segment_group("soma_group")
+    sgid = soma_group.id
+    print(f"Adding channels to {sgid}")
+    cell.set_specific_capacitance("1 uF_per_cm2", group_id=sgid)
+
+    # K
+    cell.add_channel_density(nml_cell_doc=celldoc,
+                             cd_id="SK_E2_somatic",
+                             ion_channel="SK_E2",
+                             cond_density="2.4536e-09 S_per_cm2",
+                             erev="-85 mV",
+                             group_id=sgid,
+                             ion="k",
+                             ion_chan_def_file="channels/SK_E2.channel.nml")
+    cell.add_channel_density(nml_cell_doc=celldoc,
+                             cd_id="SKv3_1_somatic",
+                             ion_channel="SKv3_1",
+                             cond_density="0.04 S_per_cm2",
+                             erev="-85 mV",
+                             group_id=sgid,
+                             ion="k",
+                             ion_chan_def_file="channels/SKv3_1.channel.nml")
+    cell.add_channel_density(nml_cell_doc=celldoc,
+                             cd_id="K_Tst_somatic",
+                             ion_channel="K_Tst",
+                             cond_density="2e-05 S_per_cm2",
+                             erev="-85 mV",
+                             group_id=sgid,
+                             ion="k",
+                             ion_chan_def_file="channels/K_Tst.channel.nml")
+    cell.add_channel_density(nml_cell_doc=celldoc,
+                             cd_id="K_Pst_somatic",
+                             ion_channel="K_Pst",
+                             cond_density="0.065 S_per_cm2",
+                             erev="-85 mV",
+                             group_id=sgid,
+                             ion="k",
+                             ion_chan_def_file="channels/K_Pst.channel.nml")
+    cell.add_channel_density(nml_cell_doc=celldoc,
+                             cd_id="Ih_somatic",
+                             ion_channel="Ih",
+                             cond_density="5.135E-05 S_per_cm2",
+                             erev="-45 mV",
+                             group_id=sgid,
+                             ion="hcn",
+                             ion_chan_def_file="channels/Ih.channel.nml")
+
+    # Na
+    cell.add_channel_density(nml_cell_doc=celldoc,
+                             cd_id="NaTa_t_somatic",
+                             ion_channel="NaTa_t",
+                             cond_density="2.1 S_per_cm2",
+                             erev="50 mV",
+                             group_id=sgid,
+                             ion="na",
+                             ion_chan_def_file="channels/NaTa_t.channel.nml")
+    cell.add_channel_density(nml_cell_doc=celldoc,
+                             cd_id="Nap_Et2_somatic",
+                             ion_channel="Nap_Et2",
+                             cond_density="1E-6 S_per_cm2",
+                             erev="50 mV",
+                             group_id=sgid,
+                             ion="na",
+                             ion_chan_def_file="channels/Nap_Et2.channel.nml")
+    # Ca
+    # internal and external concentrations are set to defaults that NEURON
+    # starts with
+    cell.add_intracellular_property("Species", validate=False,
+                                    id="ca",
+                                    concentration_model="CaDynamics_E2_NML2__decay460__gamma5_01Emin4",
+                                    ion="ca",
+                                    initial_concentration="5.0E-11 mol_per_cm3",
+                                    initial_ext_concentration="2.0E-6 mol_per_cm3",
+                                    segment_groups=sgid)
+    # https://www.neuron.yale.edu/neuron/static/new_doc/modelspec/programmatic/ions.html
+    cell.add_channel_density_v(
+        "ChannelDensityNernst",
+        nml_cell_doc=celldoc,
+        id="Ca_HVA_somatic",
+        ion_channel="Ca_HVA",
+        cond_density="5.6938e-09 S_per_cm2",
+        segment_groups=sgid,
+        ion="ca",
+        ion_chan_def_file="channels/Ca_HVA.channel.nml")
+    cell.add_channel_density_v(
+        "ChannelDensityNernst",
+        nml_cell_doc=celldoc,
+        id="Ca_LVAst_somatic",
+        ion_channel="Ca_LVAst",
+        cond_density="0.00099839 S_per_cm2",
+        segment_groups=sgid,
+        ion="ca",
+        ion_chan_def_file="channels/Ca_LVAst.channel.nml")
+
     write_neuroml2_file(celldoc, f"{cellname}.cell.nml")
 
 
