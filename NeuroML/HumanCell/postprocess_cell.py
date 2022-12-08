@@ -110,6 +110,24 @@ def post_process_cell(cellname: str):
     print("Reordering groups")
     cell.reorder_segment_groups()
 
+
+    # biophys
+    celldoc.add("IncludeType", href="channels/CaDynamics_E2_NML2.nml", validate=False)
+    celldoc.add("IncludeType", href="channels/CaDynamics_E2_NML2__decay460__gamma5_01Emin4.nml", validate=False)
+    celldoc.add("IncludeType", href="channels/CaDynamics_E2_NML2__decay122__gamma5_09Emin4.nml", validate=False)
+
+    cell.add_channel_density(nml_cell_doc=celldoc,
+                             cd_id="pas",
+                             ion_channel="pas",
+                             cond_density="1.75E-5 S_per_cm2",
+                             erev="-84.395 mV",
+                             group_id="all",
+                             ion="non_specific",
+                             ion_chan_def_file="channels/pas.channel.nml")
+    cell.set_resistivity("0.49573 kohm_cm", group_id="all")
+    cell.set_specific_capacitance("1.5967 uF_per_cm2", group_id="all")
+    cell.set_init_memb_potential("-80mV")
+
     write_neuroml2_file(celldoc, f"{cellname}.cell.nml")
 
 
