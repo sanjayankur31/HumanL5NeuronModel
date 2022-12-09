@@ -8,10 +8,12 @@ Copyright 2022 Ankur Sinha
 Author: Ankur Sinha <sanjay DOT ankur AT gmail DOT com>
 """
 
+import numpy
 import neuroml
 from neuroml.loaders import read_neuroml2_file
 from neuroml.neuro_lex_ids import neuro_lex_ids
 from pyneuroml.pynml import write_neuroml2_file
+from pyneuroml.analysis import generate_current_vs_frequency_curve
 
 
 def post_process_cell(cellname: str):
@@ -114,7 +116,6 @@ def post_process_cell(cellname: str):
     # biophys
     celldoc.add("IncludeType", href="channels/CaDynamics_E2_NML2.nml", validate=False)
     celldoc.add("IncludeType", href="channels/CaDynamics_E2_NML2__decay460__gamma5_01Emin4.nml", validate=False)
-    celldoc.add("IncludeType", href="channels/CaDynamics_E2_NML2__decay122__gamma5_09Emin4.nml", validate=False)
 
     cell.add_channel_density(nml_cell_doc=celldoc,
                              cd_id="pas",
@@ -129,42 +130,39 @@ def post_process_cell(cellname: str):
     cell.set_init_memb_potential("-80mV")
 
     # somatic
-    soma_group = cell.get_segment_group("soma_group")
-    sgid = soma_group.id
-    print(f"Adding channels to {sgid}")
-    cell.set_specific_capacitance("1 uF_per_cm2", group_id=sgid)
+    cell.set_specific_capacitance("1 uF_per_cm2", group_id=default_soma_group.id)
 
     # K
     cell.add_channel_density(nml_cell_doc=celldoc,
                              cd_id="SK_E2_somatic",
                              ion_channel="SK_E2",
                              cond_density="2.4536e-09 S_per_cm2",
-                             erev="-85 mV",
-                             group_id=sgid,
+                             erev="-77 mV",
+                             group_id=default_soma_group.id,
                              ion="k",
                              ion_chan_def_file="channels/SK_E2.channel.nml")
     cell.add_channel_density(nml_cell_doc=celldoc,
                              cd_id="SKv3_1_somatic",
                              ion_channel="SKv3_1",
                              cond_density="0.04 S_per_cm2",
-                             erev="-85 mV",
-                             group_id=sgid,
+                             erev="-77 mV",
+                             group_id=default_soma_group.id,
                              ion="k",
                              ion_chan_def_file="channels/SKv3_1.channel.nml")
     cell.add_channel_density(nml_cell_doc=celldoc,
                              cd_id="K_Tst_somatic",
                              ion_channel="K_Tst",
                              cond_density="2e-05 S_per_cm2",
-                             erev="-85 mV",
-                             group_id=sgid,
+                             erev="-77 mV",
+                             group_id=default_soma_group.id,
                              ion="k",
                              ion_chan_def_file="channels/K_Tst.channel.nml")
     cell.add_channel_density(nml_cell_doc=celldoc,
                              cd_id="K_Pst_somatic",
                              ion_channel="K_Pst",
                              cond_density="0.065 S_per_cm2",
-                             erev="-85 mV",
-                             group_id=sgid,
+                             erev="-77 mV",
+                             group_id=default_soma_group.id,
                              ion="k",
                              ion_chan_def_file="channels/K_Pst.channel.nml")
     cell.add_channel_density(nml_cell_doc=celldoc,
@@ -172,7 +170,7 @@ def post_process_cell(cellname: str):
                              ion_channel="Ih",
                              cond_density="5.135E-05 S_per_cm2",
                              erev="-45 mV",
-                             group_id=sgid,
+                             group_id=default_soma_group.id,
                              ion="hcn",
                              ion_chan_def_file="channels/Ih.channel.nml")
 
@@ -182,7 +180,7 @@ def post_process_cell(cellname: str):
                              ion_channel="NaTa_t",
                              cond_density="2.1 S_per_cm2",
                              erev="50 mV",
-                             group_id=sgid,
+                             group_id=default_soma_group.id,
                              ion="na",
                              ion_chan_def_file="channels/NaTa_t.channel.nml")
     cell.add_channel_density(nml_cell_doc=celldoc,
@@ -190,7 +188,7 @@ def post_process_cell(cellname: str):
                              ion_channel="Nap_Et2",
                              cond_density="1E-6 S_per_cm2",
                              erev="50 mV",
-                             group_id=sgid,
+                             group_id=default_soma_group.id,
                              ion="na",
                              ion_chan_def_file="channels/Nap_Et2.channel.nml")
     # Ca
@@ -202,7 +200,7 @@ def post_process_cell(cellname: str):
                                     ion="ca",
                                     initial_concentration="5.0E-11 mol_per_cm3",
                                     initial_ext_concentration="2.0E-6 mol_per_cm3",
-                                    segment_groups=sgid)
+                                    segment_groups=default_soma_group.id)
     # https://www.neuron.yale.edu/neuron/static/new_doc/modelspec/programmatic/ions.html
     cell.add_channel_density_v(
         "ChannelDensityNernst",
@@ -210,7 +208,7 @@ def post_process_cell(cellname: str):
         id="Ca_HVA_somatic",
         ion_channel="Ca_HVA",
         cond_density="5.6938e-09 S_per_cm2",
-        segment_groups=sgid,
+        segment_groups=default_soma_group.id,
         ion="ca",
         ion_chan_def_file="channels/Ca_HVA.channel.nml")
     cell.add_channel_density_v(
@@ -219,36 +217,34 @@ def post_process_cell(cellname: str):
         id="Ca_LVAst_somatic",
         ion_channel="Ca_LVAst",
         cond_density="0.00099839 S_per_cm2",
-        segment_groups=sgid,
+        segment_groups=default_soma_group.id,
         ion="ca",
         ion_chan_def_file="channels/Ca_LVAst.channel.nml")
 
     # apical
-    sg = cell.get_segment_group("apical_dendrite_group")
-    sgid = sg.id
     # K
     cell.add_channel_density(nml_cell_doc=celldoc,
                              cd_id="SK_E2_apical",
                              ion_channel="SK_E2",
                              cond_density="2.4536e-09 S_per_cm2",
-                             erev="-85 mV",
-                             group_id=sgid,
+                             erev="-77 mV",
+                             group_id=apical_group.id,
                              ion="k",
                              ion_chan_def_file="channels/SK_E2.channel.nml")
     cell.add_channel_density(nml_cell_doc=celldoc,
                              cd_id="SKv3_1_apical",
                              ion_channel="SKv3_1",
                              cond_density="0.04 S_per_cm2",
-                             erev="-85 mV",
-                             group_id=sgid,
+                             erev="-77 mV",
+                             group_id=apical_group.id,
                              ion="k",
                              ion_chan_def_file="channels/SKv3_1.channel.nml")
     cell.add_channel_density(nml_cell_doc=celldoc,
                              cd_id="Im_apical",
                              ion_channel="Im",
                              cond_density=".0002 S_per_cm2",
-                             erev="-85 mV",
-                             group_id=sgid,
+                             erev="-77 mV",
+                             group_id=apical_group.id,
                              ion="k",
                              ion_chan_def_file="channels/Im.channel.nml")
     sg.add(
@@ -307,8 +303,6 @@ def post_process_cell(cellname: str):
         inhomogeneous_parameters="PathLengthOverApicDends",
         value="1E8 * 0.00099839 * 1E-4 * (1 + (99 * (H(p - 360) * H(600 - p))))"
     )
-    # TODO: continue from here: check units
-
     cdnonuniform_ca_hva = cell.add_channel_density_v(
         "ChannelDensityNonUniformNernst",
         nml_cell_doc=celldoc,
@@ -325,17 +319,65 @@ def post_process_cell(cellname: str):
     )
     # The conditional is implemented using a heaviside function:
     # https://github.com/NeuroML/org.neuroml.export/blob/master/src/main/java/org/neuroml/export/neuron/NRNUtils.java#L174
-    # if both values in H are true, 0.9 is added to 0.1 = 1
-    # otherwise, 0.1
+    # if both values in H are true, 9 is added to 1 = 10
+    # otherwise, 1
     varparam_ca_hva.add(
         "InhomogeneousValue",
         inhomogeneous_parameters="PathLengthOverApicDends",
-        value="1E8 * 0.000555 * 1E-4 * (0.1 + (0.9 * (H(p - 685) * H(885 - p))))"
+        value="1E8 * 5.6938e-09 * 1E-4 * (1 + (9 * (H(p - 360) * H(600 - p))))"
     )
+    # Na
+    cell.add_channel_density(nml_cell_doc=celldoc,
+                             cd_id="NaTa_t_apical",
+                             ion_channel="NaTa_t",
+                             cond_density="0.001 S_per_cm2",
+                             erev="50 mV",
+                             group_id=apical_group.id,
+                             ion="na",
+                             ion_chan_def_file="channels/NaTa_t.channel.nml")
 
+    # basal
+    cell.add_channel_density(nml_cell_doc=celldoc,
+                             cd_id="Ih_basal",
+                             ion_channel="Ih",
+                             cond_density="5.135E-05 S_per_cm2",
+                             erev="-45 mV",
+                             group_id=basal_group.id,
+                             ion="hcn",
+                             ion_chan_def_file="channels/Ih.channel.nml")
+
+    # axonal
+    # nothing here
 
     write_neuroml2_file(celldoc, f"{cellname}.cell.nml")
 
 
+def analyse_HL5PC(hyperpolarising: bool = True, depolarising: bool = True):
+    """Generate various curves for HL5PC cells
+
+    :returns: None
+
+    """
+    cellname = "HL5PC"
+    print(f"Analysing {cellname}")
+    generate_current_vs_frequency_curve(
+        nml2_file=f"{cellname}.cell.nml",
+        cell_id=cellname,
+        custom_amps_nA=list(numpy.arange(-0.5, 0.21, 0.05)),
+        # custom_amps_nA=[0.2],
+        temperature="34 degC",
+        pre_zero_pulse=200,
+        post_zero_pulse=300,
+        plot_voltage_traces=True,
+        plot_iv=True,
+        plot_if=False,
+        simulator="jNeuroML_NEURON",
+        analysis_delay=300.,
+        analysis_duration=500.,
+        num_processors=8,
+    )
+
+
 if __name__ == "__main__":
     post_process_cell("HL5PC")
+    analyse_HL5PC()
