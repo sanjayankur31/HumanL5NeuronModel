@@ -48,7 +48,7 @@ Comment from original mod file:
 
         <Dynamics>
             <DerivedVariable name="V" dimension="none" value="v / VOLT_SCALE"/>
-            <DerivedVariable name="t" exposure="t" dimension="time" value="(4/(1 + exp( (V+36.56) / (-44.140) ))) * TIME_SCALE"/>
+            <DerivedVariable name="t" exposure="t" dimension="time" value="(4/(1 + exp( (V+56.56) / (-44.140) ))) * TIME_SCALE"/>
         </Dynamics>
 
     </ComponentType>

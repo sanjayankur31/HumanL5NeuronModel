@@ -363,8 +363,7 @@ def analyse_HL5PC(hyperpolarising: bool = True, depolarising: bool = True):
     generate_current_vs_frequency_curve(
         nml2_file=f"{cellname}.cell.nml",
         cell_id=cellname,
-        custom_amps_nA=[50E-3],
-        # custom_amps_nA=[0.2],
+        custom_amps_nA=[-400E-3, -350E-3, -300E-3, -250E-3, -50E-3, 50E-3, 100E-3, 150E-3],
         temperature="34 degC",
         pre_zero_pulse=1000,
         post_zero_pulse=1000,

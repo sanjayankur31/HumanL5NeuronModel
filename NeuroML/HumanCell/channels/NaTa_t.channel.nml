@@ -37,14 +37,14 @@ Comment from original mod file:
         <!-- shifted by -5: 38 -> 33; 66 -> 61 -->
         <gate id="m" type="gateHHrates" instances="3">
             <q10Settings type="q10Fixed" fixedQ10="2.95288264"/>
-            <forwardRate type="HHExpLinearRate" rate="1.092per_ms" scale="6mV" midpoint="-33mV"/>
-            <reverseRate type="HHExpLinearRate" rate="0.744per_ms" scale="-6mV" midpoint="-33mV"/>
+            <forwardRate type="HHExpLinearRate" rate="1.092per_ms" scale="6mV" midpoint="-43mV"/>
+            <reverseRate type="HHExpLinearRate" rate="0.744per_ms" scale="-6mV" midpoint="-43mV"/>
         </gate>
 
         <gate id="h" type="gateHHrates" instances="1">
             <q10Settings type="q10Fixed" fixedQ10="2.95288264"/>
-            <forwardRate type="HHExpLinearRate" rate="0.09per_ms" scale="-6mV" midpoint="-61mV"/>
-            <reverseRate type="HHExpLinearRate" rate="0.09per_ms" scale="6mV" midpoint="-61mV"/>
+            <forwardRate type="HHExpLinearRate" rate="0.09per_ms" scale="-6mV" midpoint="-71mV"/>
+            <reverseRate type="HHExpLinearRate" rate="0.09per_ms" scale="6mV" midpoint="-71mV"/>
         </gate>
 
     </ionChannel>
