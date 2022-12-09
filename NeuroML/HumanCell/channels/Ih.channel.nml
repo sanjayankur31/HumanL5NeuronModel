@@ -1,36 +1,35 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <neuroml xmlns="http://www.neuroml.org/schema/neuroml2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.neuroml.org/schema/neuroml2 https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2beta4.xsd" id="Ih">
+  <notes>NeuroML file containing a single Channel description</notes>
+  <ionChannel id="Ih" conductance="10pS" type="ionChannelHH" species="hcn">
+    <notes>Non-specific cation current
 
-    <notes>NeuroML file containing a single Channel description</notes>
-
-    <ionChannel id="Ih" conductance="10pS" type="ionChannelHH" species="hcn">
-
-        <notes>Non-specific cation current
-            
-Comment from original mod file: 
-Reference : :		Kole,Hallermann,and Stuart, J. Neurosci. 2006</notes>
-                
-        <annotation>
-            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-                <rdf:Description rdf:about="Ih">
-                    
-                    <bqmodel:isDescribedBy xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
-                        <rdf:Bag>
-                            <rdf:li>Models of Neocortical Layer 5b Pyramidal Cells Capturing a Wide Range of Dendritic and Perisomatic Active Properties,
-            Etay Hay, Sean Hill, Felix Schürmann, Henry Markram and Idan Segev, PLoS Comp Biol 2011</rdf:li>
-                            <rdf:li rdf:resource="http://www.ncbi.nlm.nih.gov/pubmed/21829333"/>
-                        </rdf:Bag>
-                    </bqmodel:isDescribedBy>
-
-                </rdf:Description>
-            </rdf:RDF>
-        </annotation>
-
-        <gate id="m" type="gateHHrates" instances="1">
-            <forwardRate type="HHExpLinearRate" rate="0.076517per_ms" scale="-11.9mV" midpoint="-154.9mV"/>
-            <reverseRate type="HHExpRate" rate="0.193per_ms" scale="33.1mV" midpoint="0mV"/>
-        </gate>
-                            
-    </ionChannel>
-
+    </notes>
+    <annotation>
+      <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+        <rdf:Description rdf:about="Ih">
+          <bqmodel:isDescribedBy xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
+            <rdf:Bag>
+              <rdf:li>
+            Reference : Scott Rich, Homeira Moradi Chameh, Vladislav Sekulic, Taufik A Valiante, Frances K Skinner, Modeling Reveals Human-Rodent Differences in H-Current Kinetics Influencing Resonance in Cortical Layer 5 Neurons, Cerebral Cortex, Volume 31, Issue 2, February 2021, Pages 845-872
+</rdf:li>
+              <rdf:li rdf:resource="https://doi.org/10.1093/cercor/bhaa261"/>
+            </rdf:Bag>
+          </bqmodel:isDescribedBy>
+        </rdf:Description>
+      </rdf:RDF>
+    </annotation>
+    <gate id="m" type="gateHHtauInf" instances="1">
+      <steadyState type="HHSigmoidVariable" rate="1" scale="-8.0488mV" midpoint="-90.873mV"/>
+      <timeCourse type="HL5PC_Ih_m_tau"/>
+    </gate>
+  </ionChannel>
+  <ComponentType name="HL5PC_Ih_m_tau" extends="baseVoltageDepTime">
+    <Constant name="TIME_SCALE" dimension="time" value="1 ms"/>
+    <Constant name="VOLT_SCALE" dimension="voltage" value="1 mV"/>
+    <Dynamics>
+      <DerivedVariable name="V" dimension="none" value="v / VOLT_SCALE"/>
+      <DerivedVariable name="t" exposure="t" dimension="time" value="(1.4975e-09 + (1/(exp(-23.453 - (0.21851 * V)) + exp((0.082671 * V) -1.3091e-09)))) * TIME_SCALE"/>
+    </Dynamics>
+  </ComponentType>
 </neuroml>

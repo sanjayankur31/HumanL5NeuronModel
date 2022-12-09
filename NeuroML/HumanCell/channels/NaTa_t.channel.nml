@@ -6,14 +6,14 @@
     <ionChannel id="NaTa_t" conductance="10pS" type="ionChannelHH" species="na">
 
         <notes>Fast inactivating Na+ current
-            
-Comment from original mod file: 
+
+Comment from original mod file:
 :Reference :Colbert and Pan 2002</notes>
-                
+
         <annotation>
             <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
                 <rdf:Description rdf:about="NaTa_t">
-                    
+
                     <bqmodel:isDescribedBy xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
                         <rdf:Bag>
                             <rdf:li>Models of Neocortical Layer 5b Pyramidal Cells Capturing a Wide Range of Dendritic and Perisomatic Active Properties,
@@ -22,7 +22,7 @@ Comment from original mod file:
                         </rdf:Bag>
                     </bqmodel:isDescribedBy>
 
-                
+
                     <bqbiol:isVersionOf xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
                         <rdf:Bag>
                             <rdf:li>Na channels</rdf:li>
@@ -34,18 +34,19 @@ Comment from original mod file:
             </rdf:RDF>
         </annotation>
 
+        <!-- shifted by -5: 38 -> 33; 66 -> 61 -->
         <gate id="m" type="gateHHrates" instances="3">
             <q10Settings type="q10Fixed" fixedQ10="2.95288264"/>
-            <forwardRate type="HHExpLinearRate" rate="1.092per_ms" scale="6mV" midpoint="-38mV"/>
-            <reverseRate type="HHExpLinearRate" rate="0.744per_ms" scale="-6mV" midpoint="-38mV"/>
+            <forwardRate type="HHExpLinearRate" rate="1.092per_ms" scale="6mV" midpoint="-33mV"/>
+            <reverseRate type="HHExpLinearRate" rate="0.744per_ms" scale="-6mV" midpoint="-33mV"/>
         </gate>
 
         <gate id="h" type="gateHHrates" instances="1">
             <q10Settings type="q10Fixed" fixedQ10="2.95288264"/>
-            <forwardRate type="HHExpLinearRate" rate="0.09per_ms" scale="-6mV" midpoint="-66mV"/>
-            <reverseRate type="HHExpLinearRate" rate="0.09per_ms" scale="6mV" midpoint="-66mV"/>
+            <forwardRate type="HHExpLinearRate" rate="0.09per_ms" scale="-6mV" midpoint="-61mV"/>
+            <reverseRate type="HHExpLinearRate" rate="0.09per_ms" scale="6mV" midpoint="-61mV"/>
         </gate>
-                            
+
     </ionChannel>
 
 </neuroml>

@@ -169,7 +169,7 @@ def post_process_cell(cellname: str):
                              cd_id="Ih_somatic",
                              ion_channel="Ih",
                              cond_density="5.135E-05 S_per_cm2",
-                             erev="-45 mV",
+                             erev="-49.85 mV",
                              group_id=default_soma_group.id,
                              ion="hcn",
                              ion_chan_def_file="channels/Ih.channel.nml")
@@ -263,7 +263,7 @@ def post_process_cell(cellname: str):
         id="Ih_apical",
         ion_channel="Ih",
         ion="hcn",
-        erev="-45 mV",
+        erev="-49.85 mV",
         validate=False
     )
     varparam_Ih = cdnonuniform_Ih.add(
@@ -341,7 +341,7 @@ def post_process_cell(cellname: str):
                              cd_id="Ih_basal",
                              ion_channel="Ih",
                              cond_density="5.135E-05 S_per_cm2",
-                             erev="-45 mV",
+                             erev="-49.85 mV",
                              group_id=basal_group.id,
                              ion="hcn",
                              ion_chan_def_file="channels/Ih.channel.nml")
@@ -363,17 +363,17 @@ def analyse_HL5PC(hyperpolarising: bool = True, depolarising: bool = True):
     generate_current_vs_frequency_curve(
         nml2_file=f"{cellname}.cell.nml",
         cell_id=cellname,
-        custom_amps_nA=list(numpy.arange(-0.5, 0.21, 0.05)),
+        custom_amps_nA=[50E-3],
         # custom_amps_nA=[0.2],
         temperature="34 degC",
-        pre_zero_pulse=200,
-        post_zero_pulse=300,
+        pre_zero_pulse=1000,
+        post_zero_pulse=1000,
         plot_voltage_traces=True,
         plot_iv=True,
         plot_if=False,
         simulator="jNeuroML_NEURON",
         analysis_delay=300.,
-        analysis_duration=500.,
+        analysis_duration=1000.,
         num_processors=8,
     )
 
