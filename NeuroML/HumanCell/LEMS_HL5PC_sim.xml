@@ -1,0 +1,28 @@
+<Lems>
+    
+    <!-- 
+
+        This LEMS file has been automatically generated using PyNeuroML v0.7.6 (libNeuroML v0.4.2)
+
+     -->
+    
+    <!-- Specify which component to run -->
+    <Target component="HL5PC_sim"/>
+
+    <!-- Include core NeuroML2 ComponentType definitions -->
+    <Include file="Cells.xml"/>
+    <Include file="Networks.xml"/>
+    <Include file="Simulation.xml"/>
+    
+    <Include file="HL5PC.net.nml"/>
+    <Include file="HL5PC.cell.nml"/>
+   
+    <Simulation id="HL5PC_sim" length="300.0ms" step="0.01ms" target="HL5PCNet" seed="12345">  <!-- Note seed: ensures same random numbers used every run -->
+        
+        <OutputFile id="HL5PC_net_output" fileName="HL5PC_net.dat">
+            <OutputColumn id="HL5PC_pop_0_v" quantity="HL5PC_pop/0/HL5PC/0/v"/> 
+        </OutputFile>
+        
+    </Simulation>
+
+</Lems>

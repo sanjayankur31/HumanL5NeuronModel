@@ -1,0 +1,18 @@
+
+# Script for running automated tests on OSB, see https://github.com/OpenSourceBrain/osb-model-validation
+
+target: LEMS_HL5PC_sim.xml
+engine: jNeuroML_NEURON
+mep: NEURON-test/.test.pc.mep
+experiments:
+  stepPC:
+    observables:
+      spike times:
+        file:
+          path: HL5PC_net.dat
+          columns: [0,1]
+          scaling: [1000,1000]
+        spike detection:
+          method: threshold
+        tolerance: 
+
