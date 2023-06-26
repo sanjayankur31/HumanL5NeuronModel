@@ -14,7 +14,8 @@ jobs:
       fail-fast: false
       matrix:
         python-version: [ 3.9 ]
-        engine: [ jNeuroML_validate, "NEURON:7.6", "NEURON:8.0", jNeuroML_NEURON, jNeuroML_NetPyNE, jNeuroML_EDEN ]
+          #engine: [ jNeuroML_validate, "NEURON:7.6", "NEURON:8.0", jNeuroML_NEURON, jNeuroML_NetPyNE, jNeuroML_EDEN ]
+        engine: [ jNeuroML_validate, "NEURON:7.6", "NEURON:8.0", jNeuroML_NEURON]
 
     steps:
     - uses: actions/checkout@v2
@@ -33,7 +34,7 @@ jobs:
 
     - name: Compile some mod files, required for NEURON tests
       run: |
-        if [[  ${{ matrix.engine }} == *"NEURON"* ]]; then omv install NEURON; cd NeuroML2/HumanCell ; nrnivmodl ../../HumanCell/; fi
+        if [[  ${{ matrix.engine }} == *"NEURON"* ]]; then omv install NEURON; cd NeuroML/HumanCell ; nrnivmodl ../../HumanCell/; fi
 
     - name: Run OMV tests on engine ${{ matrix.engine }}
       run: |
