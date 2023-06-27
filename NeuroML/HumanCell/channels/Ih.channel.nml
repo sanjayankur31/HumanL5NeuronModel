@@ -20,8 +20,8 @@
       </rdf:RDF>
     </annotation>
     <gate id="m" type="gateHHtauInf" instances="1">
-      <steadyState type="HHSigmoidVariable" rate="1" scale="-8.0488mV" midpoint="-90.873mV"/>
       <timeCourse type="HL5PC_Ih_m_tau"/>
+      <steadyState type="HHSigmoidVariable" rate="1" scale="-8.0488mV" midpoint="-90.873mV"/>
     </gate>
   </ionChannel>
   <ComponentType name="HL5PC_Ih_m_tau" extends="baseVoltageDepTime">
